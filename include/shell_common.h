@@ -3,10 +3,10 @@
 
 /**
  * shell_common.h
- * 这个头文件提供一些常用的函数
+ * 这个头文件提供一些 module 与 shell 交互时常用的函数
  */
 
-#include "const.h"
+#include <nspireio/nspireio.h>
 
 /**
  * 系统调用，执行 shell 命令
@@ -15,9 +15,21 @@
 int sh_system(const char *string);
 
 /**
- * 退出程序并退出这层 shell 
+ * 执行一个 shell 脚本文件
+ * @param shell 脚本文件路径
  */
-void exit_shell();
+int sh_script(const char* path);
+
+/**
+ * 退出一个 module
+ * @param status 返回给 shell 的值
+ */
+void sh_exit(int status);
+
+/**
+ * 退出 module 并退出这层 shell 
+ */
+void sh_exit_with_shell();
 
 
 

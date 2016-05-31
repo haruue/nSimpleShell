@@ -7,18 +7,16 @@
  */
 
 /**
- * 环境变量
+ * 设置以下函数进行处理的环境变量，一般仅用于内部调用
+ * @param 指向首个环境变量的指针
  */
-struct SHELL_ENV {
-	char *key;
-	char *value;
-};
+void setDefaultShellEnv(char** env);
 
 /**
- * 设置以下函数进行处理的 SHELL_ENV 对象，一般仅用于内部调用
- * @param 指向这个 SHELL_ENV 对象的指针
+ * 获得指向首个环境变量的指针以进行遍历
+ * @return 相当于 extern char ** environ;
  */
-void setDefaultShellEnv(SHELL_ENV* env);
+char** sh_environ();
 
 /**
  * 通过 key 获取一个环境变量
@@ -41,7 +39,7 @@ int sh_putenv(const char *string);
  * @param overwrite 是否覆盖，0 不覆盖，1 覆盖
  * @return 成功则返回 0 ，否则返回 -1
  */
- int sh_setenv(const char *name,const char * value,int overwrite);
+int sh_setenv(const char *name,const char * value,int overwrite);
 
 
 /**

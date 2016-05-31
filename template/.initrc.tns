@@ -1,0 +1,7 @@
+# a simple initrc for nspire shell
+
+PATH=/documents/bin
+PS1='$ '
+PS2='> '
+PS3='#? '
+PS4='+ '

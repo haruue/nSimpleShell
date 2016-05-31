@@ -4,11 +4,9 @@ GCC = nspire-gcc
 AS  = nspire-as
 GXX = nspire-g++
 LD  = nspire-ld
-GENZEHN = genzehn
+AR  = arm-none-eabi-ar
 
 GCCFLAGS = -Wall -W -marm
-LDFLAGS =
-ZEHNFLAGS = --name "sh"
 
 ifeq ($(DEBUG),FALSE)
 	GCCFLAGS += -Os
@@ -17,17 +15,14 @@ else
 endif
 
 GCCFLAGS += -I../include
-LDFLAGS += -L../lib -lshell
 
 OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
 OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
 OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
-EXE = sh
-DISTDIR = .
-vpath %.tns $(DISTDIR)
-vpath %.elf $(DISTDIR)
 
-all: $(EXE).tns
+LIB = shell
+
+all: $(LIB).a
 
 %.o: %.c
 	$(GCC) $(GCCFLAGS) -c $< -o $@
@@ -38,14 +33,8 @@ all: $(EXE).tns
 %.o: %.S
 	$(AS) -c $< -o $@
 
-$(EXE).elf: $(OBJS)
-	mkdir -p $(DISTDIR)
-	$(LD) $^ -o $@ $(LDFLAGS)
-
-$(EXE).tns: $(EXE).elf
-	$(GENZEHN) --input $^ --output $@.zehn $(ZEHNFLAGS)
-	make-prg $@.zehn $@
-	rm $@.zehn
+$(LIB).a: $(OBJS)
+	$(AR) crv lib$(LIB).a $^ 
 
 clean:
-	rm -f $(OBJS) $(DISTDIR)/$(EXE).tns $(DISTDIR)/$(EXE).elf $(DISTDIR)/$(EXE).zehn
+	rm -f *.o *.a

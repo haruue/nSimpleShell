@@ -1,0 +1,7 @@
+*.tns
+*.o
+*.elf
+*.a
+*.so
+/build
+!/template
