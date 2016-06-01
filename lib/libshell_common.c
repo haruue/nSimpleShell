@@ -3,45 +3,54 @@
 #include <libndls.h>
 #include <nspireio/nspireio.h>
 #include "const.h"
-#include "shell_env.h"
-
-
 
 int sh_system(const char *command) {
-	char *string = malloc(sizeof(command));
+	if (strlen(command) == 0) {
+		return 0;
+	}
+	static char *string = NULL;
+	string = malloc(sizeof(command));
 	strcpy(string, command);
 	char *words[MAX_ARGUMENTS_COUNT] = {0};
 	int argument_count = 0;
 	char *tmp;
-	while ((tmp = strtok(string, "")) != NULL) {
-		words[argument_count] = string;
-		string = tmp;
+	tmp = strtok(string, "\x20");
+	while (tmp != NULL) {
+		words[argument_count] = tmp;
+printf("%s: %d\n", __FILE__, __LINE__);
+printf("%s\n", tmp);
+		tmp = strtok(NULL, "\x20");
 		argument_count++;
 	}
+printf("%s: %d\n", __FILE__, __LINE__);
 	// 作为环境变量定义
 	if (strstr(words[0], "=") != NULL) {
-		sh_putenv(string);
-		free(string);
+printf("%s\n", string);
+printf("%s: %d\n", __FILE__, __LINE__);
+		putenv(string);
+printf("%s: %d\n", __FILE__, __LINE__);
 		return 0;
 	}
-	free(string);
 	// 作为模块命令
 	char *path = malloc(50 * sizeof(char));
-	strcpy(path, sh_getenv("PATH"));
+	strcpy(path, getenv("PATH"));
 	strcat(path, "/");
 	strcat(path, words[0]);
 	strcat(path, ".tns");
-	if (access(path, F_OK) != 0) {
+	if (access(path, F_OK) == -1) {
 		nio_printf("sh: %s: command not found\n", words[0]);
 		return 127;
 	}
 	int argc = argument_count + EXTERN_ARGUMENTS_COUNT - 1;
-	char **argv = malloc(argc * sizeof(char *));
+	char **argv = malloc((argc + 3) * sizeof(char *));
 	argv[0] = (char *) nio_get_default();
-	argv[1] = (char *) sh_environ();
+	extern char **environ;
+	argv[1] = (char *) &environ;
 	for (int i = 0; i < argument_count; ++i) {
 		argv[i + EXTERN_ARGUMENTS_COUNT] = words[i + 1];
 	}
+	argv[argument_count + EXTERN_ARGUMENTS_COUNT] = NULL;
+	argv[argument_count + EXTERN_ARGUMENTS_COUNT + 1] = NULL;
 	int result = nl_exec(path, argc, argv);
 	nio_load(CONSOLE_SCREEN_CACHE_FILE, nio_get_default());
 	return result;
@@ -61,7 +70,12 @@ int sh_script(const char* path) {
 	int result = 0;
 	while (!feof(fp)) {
 		memset(command, 0, MAX_COMMAND_LENGTH * sizeof(char));
-		fgets(command, sizeof(command) - 1, fp);
+		fgets(command, MAX_COMMAND_LENGTH, fp);
+		for (unsigned int i = 0; i < strlen(command); i++) {
+			if (command[i] == '\n') {
+				command[i] = '\0';
+			}
+		}
 		result = sh_system(command);
 	}
 	free(command);

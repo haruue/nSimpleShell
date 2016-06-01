@@ -8,7 +8,6 @@
 
 #include <libndls.h>
 #include "const.h"
-#include "shell_env.h"
 
 // C 库
 #ifdef __cplusplus
@@ -56,8 +55,8 @@ int main(int argc, char* argv[]) {
 	// 额外参数
 	nio_console *csl = (nio_console *) argv[1];
     nio_set_default(csl);
-    char** env = (char **) argv[2];
-    setDefaultShellEnv(env);
+    extern char **environ;
+    environ = *((char ***) argv[2]);
 
     // 执行模块的 main 函数
     int result = module_main(module_argc, module_argv);

@@ -1,4 +1,4 @@
-DEBUG = TRUE
+DEBUG = FALSE
 
 GCC = nspire-gcc
 AS  = nspire-as
@@ -8,7 +8,7 @@ GENZEHN = genzehn
 
 GCCFLAGS = -Wall -W -marm
 LDFLAGS =
-ZEHNFLAGS = --name "sh"
+ZEHNFLAGS = --name "echo"
 
 ifeq ($(DEBUG),FALSE)
 	GCCFLAGS += -Os
@@ -16,13 +16,13 @@ else
 	GCCFLAGS += -O0 -g
 endif
 
-GCCFLAGS += -I../include
-LDFLAGS += -L../lib -lshell
+GCCFLAGS += -I../../include
+LDFLAGS += -L../../lib -lshell
 
 OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
 OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
 OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
-EXE = shell
+EXE = echo
 DISTDIR = .
 vpath %.tns $(DISTDIR)
 vpath %.elf $(DISTDIR)

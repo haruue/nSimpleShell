@@ -1,7 +1,6 @@
 #include <libndls.h>
 #include "shell_common.h"
 #include "const.h"
-#include "shell_env.h"
 
 int main(void) {
 	assert_ndless_rev(877);
@@ -14,14 +13,26 @@ int main(void) {
     char *command = malloc(MAX_COMMAND_LENGTH * sizeof(char));
 
     int result = sh_script(PATH_INITRC);
+    // int result = 0;
 
 	while (result != RETURN_VALUE_EXIT) {
-		nio_printf(sh_getenv("PS1"));
-		nio_scanf("%s", command);
-		if (strcmp(command, "exit")) {
-			result = RETURN_VALUE_EXIT;
+		memset(command, 0, MAX_COMMAND_LENGTH * sizeof(char));
+		if (getenv("PS1")) {
+			nio_printf("%s ", getenv("PS1"));
+		} else {
+			nio_printf("%s ", "$");
+			printf("PS1 undef");
 		}
-		if (strcmp(command, "sh")) {
+		nio_getsn(command, MAX_COMMAND_LENGTH);
+		if (strlen(command) == 0) {
+			result = 0;
+			continue;
+		}
+		if (strcmp(command, "exit") == 0) {
+			result = RETURN_VALUE_EXIT;
+			continue;
+		}
+		if (strcmp(command, "sh") == 0) {
 			result = 0;
 			continue;
 		}
