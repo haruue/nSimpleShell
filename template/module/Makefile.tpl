@@ -16,8 +16,8 @@ else
 	GCCFLAGS += -O0 -g
 endif
 
-GCCFLAGS += -I../include
-LDFLAGS += -L../lib -lshell
+GCCFLAGS += -I../../include
+LDFLAGS += -L../../lib -lshell
 
 OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
 OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))

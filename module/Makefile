@@ -1,22 +1,18 @@
 MODULEDIRS = $(shell find . -mindepth 1 -maxdepth 1 -type d)
-BUILDDIRS = $(MODULEDIRS)
-CLEANDIRS = $(MODULEDIRS)
 TEMPLATE_DIR = ../template
 NAME = 
 
 MAKE = make
 
-all: $(BUILDDIRS)
+all: $(MODULEDIRS).build
 
-clean: $(CLEANDIRS)
+clean: $(MODULEDIRS).clean
 
-$(BUILDDIRS):
-	cd $@
-	$(MAKE)
+$(MODULEDIRS).build:
+	$(MAKE) -C $(patsubst %.build,%,$@)
 
-$(CLEANDIRS):
-	cd $@
-	$(MAKE) clean
+$(MODULEDIRS).clean:
+	$(MAKE) -C $(patsubst %.clean,%,$@) clean
 
 new:
 ifeq ($(NAME),)

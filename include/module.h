@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 	// 区分程序参数和额外参数
 	// 程序参数
 	int module_argc = argc - EXTERN_ARGUMENTS_COUNT;
-	char **module_argv = new char*[module_argc];
+	char **module_argv = (char **) malloc(module_argc * sizeof(char*));
 	module_argv[0] = argv[0];
 	for (int i = 1; i < module_argc; i++) {
 		module_argv[i] = argv[i + EXTERN_ARGUMENTS_COUNT];

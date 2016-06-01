@@ -1,40 +1,36 @@
 MAKE = make
 DISTDIR = ./build
 
-all: lib sh module generate
+all: generate
 
 lib:
-	cd ./lib
-	$(MAKE)
+	$(MAKE) -C ./lib
 
 sh: lib
-	cd ./sh
-	$(MAKE)
+	$(MAKE) -C ./sh
 
 module: 
-	cd ./module
-	$(MAKE)
+	$(MAKE) -C ./module
 
-generate: lib sh module
+generate: sh module
 	mkdir -p $(DISTDIR)/bin
-	cp ./sh/*.tns $(DISTDIR)/
-	cp ./module/*/*.tns $(DISTDIR)/bin/
-	cp ./template/*.tns $(DISTDIR)/
+	find ./sh/ -name "*\.tns" -exec cp {} $(DISTDIR)/ \;
+	find ./module/ -name "*\.tns" -exec cp {} $(DISTDIR)/bin/ \;
+	find ./template/ -name "*\.tns" -exec cp {} $(DISTDIR)/ \;
 
 clean: clean-generate clean-module clean-sh clean-lib
 
 clean-lib:
-	cd ./lib
-	$(MAKE) clean
+	$(MAKE) -C ./lib clean
 
 clean-sh: 
-	cd ./sh
-	$(MAKE) clean
+	$(MAKE) -C ./sh clean
 
 clean-module: 
-	cd ./module
-	$(MAKE) clean
+	$(MAKE) -C ./module clean
 
 clean-generate:
 	rm -f $(DISTDIR)/*.tns
+	rm -f $(DISTDIR)/bin/*.tns
 	
+.PHONY: lib sh module generate clean clean-lib clean-sh clean-module clean-generate
