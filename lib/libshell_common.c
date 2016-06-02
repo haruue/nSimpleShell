@@ -8,8 +8,7 @@ int sh_system(const char *command) {
 	if (strlen(command) == 0) {
 		return 0;
 	}
-	static char *string = NULL;
-	string = malloc(sizeof(command));
+	char *string = malloc((strlen(command) + 1) * sizeof(char));
 	strcpy(string, command);
 	char *words[MAX_ARGUMENTS_COUNT] = {0};
 	int argument_count = 0;
@@ -17,18 +16,15 @@ int sh_system(const char *command) {
 	tmp = strtok(string, "\x20");
 	while (tmp != NULL) {
 		words[argument_count] = tmp;
-printf("%s: %d\n", __FILE__, __LINE__);
-printf("%s\n", tmp);
 		tmp = strtok(NULL, "\x20");
 		argument_count++;
 	}
-printf("%s: %d\n", __FILE__, __LINE__);
 	// 作为环境变量定义
 	if (strstr(words[0], "=") != NULL) {
-printf("%s\n", string);
-printf("%s: %d\n", __FILE__, __LINE__);
+		char *envString = malloc((strlen(string) + 1) * sizeof(char));
+		strcpy(envString, string);
 		putenv(string);
-printf("%s: %d\n", __FILE__, __LINE__);
+		free(string);
 		return 0;
 	}
 	// 作为模块命令
@@ -53,6 +49,7 @@ printf("%s: %d\n", __FILE__, __LINE__);
 	argv[argument_count + EXTERN_ARGUMENTS_COUNT + 1] = NULL;
 	int result = nl_exec(path, argc, argv);
 	nio_load(CONSOLE_SCREEN_CACHE_FILE, nio_get_default());
+	free(string);
 	return result;
 }
 

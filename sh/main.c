@@ -13,7 +13,6 @@ int main(void) {
     char *command = malloc(MAX_COMMAND_LENGTH * sizeof(char));
 
     int result = sh_script(PATH_INITRC);
-    // int result = 0;
 
 	while (result != RETURN_VALUE_EXIT) {
 		memset(command, 0, MAX_COMMAND_LENGTH * sizeof(char));
