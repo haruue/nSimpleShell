@@ -1,18 +1,21 @@
 MODULEDIRS = $(shell find . -mindepth 1 -maxdepth 1 -type d)
+BUILDMODULES = $(addprefix __build__, $(MODULEDIRS))
+CLEANMODULES = $(addprefix __clean__, $(MODULEDIRS))
+
 TEMPLATE_DIR = ../template
 NAME = 
 
 MAKE = make
 
-all: $(MODULEDIRS).build
+all: $(BUILDMODULES)
 
-clean: $(MODULEDIRS).clean
+clean: $(CLEANMODULES)
 
-$(MODULEDIRS).build:
-	$(MAKE) -C $(patsubst %.build,%,$@)
+$(BUILDMODULES):
+	$(MAKE) -C $(patsubst __build__%,%,$@)
 
-$(MODULEDIRS).clean:
-	$(MAKE) -C $(patsubst %.clean,%,$@) clean
+$(CLEANMODULES):
+	$(MAKE) -C $(patsubst __clean__%,%,$@) clean
 
 new:
 ifeq ($(NAME),)

@@ -24,5 +24,7 @@
 // 最大命令长度
 #define MAX_COMMAND_LENGTH 150
 
+// 最大路径长度
+#define MAX_PATH_LENGTH 150
 
 #endif /*__SHELL_INCLUDE_CONST_H__*/
