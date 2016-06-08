@@ -1,4 +1,4 @@
-DEBUG = TRUE
+DEBUG = FALSE
 
 GCC = nspire-gcc
 AS  = nspire-as
@@ -11,7 +11,8 @@ LDFLAGS =
 ZEHNFLAGS = --name "sh"
 
 ifeq ($(DEBUG),FALSE)
-	GCCFLAGS += -Os
+	# GCCFLAGS += -Os
+	GCCFLAGS += -O3
 else
 	GCCFLAGS += -O0 -g
 endif

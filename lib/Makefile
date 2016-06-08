@@ -1,4 +1,4 @@
-DEBUG = TRUE
+DEBUG = FALSE
 
 GCC = nspire-gcc
 AS  = nspire-as
@@ -9,7 +9,8 @@ AR  = arm-none-eabi-ar
 GCCFLAGS = -Wall -W -marm
 
 ifeq ($(DEBUG),FALSE)
-	GCCFLAGS += -Os
+	# GCCFLAGS += -Os
+	GCCFLAGS += -O3
 else
 	GCCFLAGS += -O0 -g
 endif
