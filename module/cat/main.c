@@ -16,9 +16,10 @@ int module_main(int argc, char *argv[]) {
 		return 1;
 	}
 	char c;
-	while (c = fgetc(fp), !feof(fp)) {
+	while (c = fgetc(fp), !feof(fp)) {	// 先 fgetc 再判断文件末尾
 		nio_putc(c, nio_get_default());
 	}
 	fclose(fp);
+	free(path);
 	return 0;
 }
