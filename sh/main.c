@@ -7,7 +7,11 @@ int main(void) {
 
 	// 初始化 console 
 	nio_console csl;
-    nio_init(&csl, NIO_MAX_COLS, NIO_MAX_ROWS, 0, 0, BLACK, WHITE, TRUE);
+	if (has_colors) {	// CX 上黑底白字
+	    nio_init(&csl, NIO_MAX_COLS, NIO_MAX_ROWS, 0, 0, BLACK, WHITE, TRUE);
+	} else {	// 大黑上白底黑字
+	    nio_init(&csl, NIO_MAX_COLS, NIO_MAX_ROWS, 0, 0, WHITE, BLACK, TRUE);
+	}
     nio_set_default(&csl);
 	
     char *command = malloc(MAX_COMMAND_LENGTH * sizeof(char));
