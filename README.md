@@ -13,12 +13,21 @@ echo <some-text> 回显
 ls [dir-name] 列出目录中的文件
 pwd 查看当前工作目录
 rm <file-name> 删除一个文件
+exit 退出shell
 ```
 
 已实现的语句: 
 ```shell
 KEY=VALUE 赋值语句 
 ```
+
+其他：
+```shell
+开启时自动执行脚本 /documents/.initrc.tns
+```
+
+## Download
+https://github.com/haruue/nSimpleShell/releases
 
 ## Build
 需要 Ndless 4.0 SDK
@@ -37,7 +46,7 @@ make clean && make
 Build 之后将 /build 下面的所有东西移动到 Nspire 的文档根目录。然后打开 shell 即可使用。
 
 ## How does it work
-Ndless 通过 nio 库提供的 console 并不能直接用，因为打开程序时不能保持在同一个 console 里输出结果。另外，环境变量也没能直接实现。因此占用程序的两个参数，`argv[1]`用于存储当前的 console 指针，`argv[2]`用于存储当前的环境变量指针。我们把这些子程序放到一个专门的目录里，供父程序调用，同时模块化可以很容易地增加功能。
+由于需要在同一个`nio_console`里输出结果，因此所有 module 都需要共用一个`nio_console`。另外，环境变量也没能直接实现。因此占用程序的两个参数，`argv[1]`用于存储当前的`nio_console`指针，`argv[2]`用于存储当前的环境变量指针。我们把这些子程序放到一个专门的目录里，供父程序调用，同时模块化可以很容易地增加功能。
 
 此外，由于这种设计还是 too simple ，所以与我们平时使用的 shell 有很大的不同：
 
@@ -47,15 +56,15 @@ Ndless 通过 nio 库提供的 console 并不能直接用，因为打开程序�
 
 ## Develop
 + 创建一个新的 module
-```shell
-cd ./module
-make new NAME=<module name>
-```
-这样会自动生成一个模板
+    ```shell
+    cd ./module
+    make new NAME=<module name>
+    ```
+    这样会自动生成一个 module 的`Makefile`和`main.c`模板
 
-+ `module_main()`函数：实际上的 main 函数在`module.h`里，我们使用它进行前置参数处理，设置 console 和全局变量指针并将这两个参数从参数表里移除，这样你就可以像往常一样直接使用`argc`和`argv`。
++ `module_main()`函数：直接当作 module 的 main 函数使用即可，实际上的 main 函数在`module.h`里，我们使用它进行前置参数处理，设置`nio_console`和全局变量指针并将这两个参数从参数表里移除，这样你就可以像往常一样直接使用`argc`和`argv`。
 
-+ 输出时请使用`nio_printf()`函数，如果要调用类似于`nio_putc()`这种一定要第二个参数的函数，请传入`nio_get_default()`作为 console 指针。
++ 输出时请使用`nio_printf()`函数，如果要调用需要`nio_console`指针的函数，请传入`nio_get_default()`作为`nio_console`指针。
 
 + 使用和设置环境变量请直接使用`setenv`, `putenv`和`getenv`。
 
