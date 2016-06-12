@@ -3,13 +3,13 @@
 #include <libndls.h>
 #include "const.h"
 
-unsigned int sizeofString(const char *string);
-char *mallocString(const char *string);
-char *addEndSlash(char *string);
-char *deleteEndSlash(char *string);
-char *deleteLastDir(char *path);
+unsigned int __sh_dir_sizeofString(const char *string);
+char *__sh_dir_mallocString(const char *string);
+char *__sh_dir_addEndSlash(char *string);
+char *__sh_dir_deleteEndSlash(char *string);
+char *__sh_dir_deleteLastDir(char *path);
 
-char *sh_getcwd(char *buf, unsigned int size) {
+char *__sh_getcwd(char *buf, unsigned int size) {
 	char *pwdString = getenv("PWD");
 	if (pwdString == NULL) {
 		char *homeString = getenv("HOME");
@@ -26,14 +26,14 @@ char *sh_getcwd(char *buf, unsigned int size) {
 	char *result;
 	switch (paramBufState | paramSizeState) {
 		case 0:
-			result = mallocString(pwdString);
+			result = __sh_dir_mallocString(pwdString);
 			strcpy(result, pwdString);
 			return result;
 		case 1:
 			strcpy(buf, pwdString);
 			return buf;
 		case 2:
-			if (size >= sizeofString(pwdString)) {
+			if (size >= __sh_dir_sizeofString(pwdString)) {
 				result = malloc(size);
 				strcpy(result, pwdString);
 			} else {
@@ -41,7 +41,7 @@ char *sh_getcwd(char *buf, unsigned int size) {
 			}
 			return result;
 		case 3:
-			if (size >= sizeofString(pwdString)) {
+			if (size >= __sh_dir_sizeofString(pwdString)) {
 				strcpy(buf, pwdString);
 			} else {
 				buf = NULL;
@@ -51,11 +51,11 @@ char *sh_getcwd(char *buf, unsigned int size) {
 	return NULL;
 }
 
-char *sh_getwd(char *path_name) {
+char *__sh_getwd(char *path_name) {
 	return sh_getcwd(path_name, 0);
 }
 
-int sh_chdir(const char *path) {
+int __sh_chdir(const char *path) {
 	char *absolute_path = malloc(MAX_PATH_LENGTH * sizeof(char));
 	sh_relativePathToAbsolute(absolute_path, path);
 	if (!sh_isdir(absolute_path)) {
@@ -66,19 +66,19 @@ int sh_chdir(const char *path) {
 	return 0;
 }
 
-int sh_mkdir(const char *path_name, int mode) {
+int __sh_mkdir(const char *path_name, int mode) {
 	char *absolute_path = malloc(MAX_PATH_LENGTH * sizeof(char));
 	sh_relativePathToAbsolute(absolute_path, path_name);
 	return mkdir(absolute_path, mode);
 }
 
-int sh_rmdir(const char *path) {
+int __sh_rmdir(const char *path) {
 	char *absolute_path = malloc(MAX_PATH_LENGTH * sizeof(char));
 	sh_relativePathToAbsolute(absolute_path, path);
 	return rmdir(absolute_path);
 }
 
-int sh_isdir(const char *path) {
+int __sh_isdir(const char *path) {
 	if (strcmp(path, "/") == 0) {	// 我觉得这是一个 BUG ，根目录不被认为是一个目录。。。
 		return 1;
 	}
@@ -87,11 +87,11 @@ int sh_isdir(const char *path) {
 	return S_ISDIR(info.st_mode);
 }
 
-int sh_isAbsolutePath(const char *path) {
+int __sh_isAbsolutePath(const char *path) {
 	return path[0] == '/';
 }
 
-char *sh_relativePathToAbsolute(char *absolute_path, const char *relative_path) {
+char *__sh_relativePathToAbsolute(char *absolute_path, const char *relative_path) {
 	char *tmpPath = malloc(MAX_PATH_LENGTH * sizeof(char));
 	if (sh_isAbsolutePath(relative_path)) { // 绝对路径形式
 		strcpy(tmpPath, relative_path);
@@ -99,7 +99,7 @@ char *sh_relativePathToAbsolute(char *absolute_path, const char *relative_path) 
 		char *pwd = sh_getcwd(NULL, 0);
 		strcpy(tmpPath, pwd);
 		free(pwd);
-		addEndSlash(tmpPath);
+		__sh_dir_addEndSlash(tmpPath);
 		strcat(tmpPath, relative_path);
 	}
 	strcpy(absolute_path, "/");
@@ -111,11 +111,11 @@ char *sh_relativePathToAbsolute(char *absolute_path, const char *relative_path) 
 			continue;
 		}
 		if (strcmp(fold, "..") == 0) {
-			deleteLastDir(absolute_path);
+			__sh_dir_deleteLastDir(absolute_path);
 			fold = strtok(NULL, "/");
 			continue;
 		}
-		addEndSlash(absolute_path);
+		__sh_dir_addEndSlash(absolute_path);
 		strcat(absolute_path, fold);
 		fold = strtok(NULL, "/");
 	}
@@ -131,15 +131,15 @@ char *sh_relativePathToAbsolute(char *absolute_path, const char *relative_path) 
 /**
  * 返回 string 占用的内存空间
  */
-unsigned int sizeofString(const char *string) {
+unsigned int __sh_dir_sizeofString(const char *string) {
 	return (strlen(string) + 1) * sizeof(char);
 }
 
 /**
  * 分配一块与给定的 string 一样大的堆内存
  */
-char *mallocString(const char *string) {
-	return malloc(sizeofString(string));
+char *__sh_dir_mallocString(const char *string) {
+	return malloc(__sh_dir_sizeofString(string));
 }
 
 /**
@@ -151,7 +151,7 @@ char *mallocString(const char *string) {
  * 传入空字符串将会被添加一个斜杠成为根目录
  * "" -> "/"
  */
-char *addEndSlash(char *string) {
+char *__sh_dir_addEndSlash(char *string) {
 	if (strcmp(string, "") == 0) {	// 本来就是空的
 		strcpy(string, "/");
 	} else {
@@ -176,7 +176,7 @@ char *addEndSlash(char *string) {
  * 传入空字符串将会被添加一个斜杠成为根目录
  * "" -> "/"
  */
-char *deleteEndSlash(char *string) {
+char *__sh_dir_deleteEndSlash(char *string) {
 	if (strcmp(string, "") == 0) {
 		strcpy(string, "/");
 	} else {
@@ -196,9 +196,9 @@ char *deleteEndSlash(char *string) {
  * "/documents/ndless/" -> "/documents/ndless/"
  * 此函数调用 char *deleteEndSlash(char *string) ，特殊情况处理相同，不再赘述
  */
-char *deleteLastDir(char *path) {
+char *__sh_dir_deleteLastDir(char *path) {
 	char *ptr = path;
-	deleteEndSlash(path);
+	__sh_dir_deleteEndSlash(path);
 	while (*++ptr);
 	while (*--ptr != '/');
 	if (ptr != path) {

@@ -2,7 +2,7 @@
 #include <module.h>
 #include <dir_common.h>
 
-char *addEndSlash(char *string);
+char *__sh_dir_addEndSlash(char *string);
 char *basename(char *path);
 
 int module_main(int argc, char *argv[]) {
@@ -20,7 +20,7 @@ int module_main(int argc, char *argv[]) {
 		return 1;
 	}
 	if (sh_isdir(dst_path)) {	// 如果目标是一个目录，则当目录处理，在后面加上文件名
-		addEndSlash(dst_path);
+		__sh_dir_addEndSlash(dst_path);
 		strcat(dst_path, basename(src_path));
 	}
 	FILE *fp_src = fopen(src_path, "r");

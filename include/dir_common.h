@@ -12,6 +12,7 @@
  * @param size buf的长度，传入 0 自动确定大小
  * @return 如果绝对路径长度超过 size ，返回 NULL。否则返回结果
  */
+#define sh_getcwd __sh_getcwd
 char *sh_getcwd(char *buf, unsigned int size);
 
 /**
@@ -19,6 +20,7 @@ char *sh_getcwd(char *buf, unsigned int size);
  * @param path_name 存放工作目录字符串的内存指针（传入 NULL 可自动动态分配）
  * @return 当前工作目录
  */
+#define sh_getwd __sh_getwd
 char *sh_getwd(char *path_name);
 
 /**
@@ -26,6 +28,7 @@ char *sh_getwd(char *path_name);
  * @param path 需要改变到的目录的相对路径或者绝对路径
  * @return 成功返回 0 ，发生错误则返回错误代码
  */
+#define sh_chdir __sh_chdir
 int sh_chdir(const char *path);
 
 /**
@@ -34,6 +37,7 @@ int sh_chdir(const char *path);
  * @param mode 访问权限（貌似 Nspire 上一般用 0777 就好）
  * @return 成功返回 0 ，失败返回错误代码
  */
+#define sh_mkdir __sh_mkdir
 int sh_mkdir(const char *path_name, int mode);
 
 /**
@@ -41,6 +45,7 @@ int sh_mkdir(const char *path_name, int mode);
  * @param path 需要删除的目录的相对路径或者绝对路径，目录必须为空
  * @return 成功返回 0 ，失败返回错误代码
  */
+#define sh_rmdir __sh_rmdir
 int sh_rmdir(const char *path);
 
 /**
@@ -48,6 +53,7 @@ int sh_rmdir(const char *path);
  * @param path 需要检测的相对路径或者绝对路径
  * @return 是目录则返回 1 ，否则返回 0 
  */
+#define sh_isdir __sh_isdir
 int sh_isdir(const char *path);
 
 /**
@@ -55,6 +61,7 @@ int sh_isdir(const char *path);
  * @param path 需要判断的路径
  * @return 绝对路径返回 1 ，否则返回 0  
  */
+#define sh_isAbsolutePath __sh_isAbsolutePath
 int sh_isAbsolutePath(const char *path);
 
 /**
@@ -63,6 +70,7 @@ int sh_isAbsolutePath(const char *path);
  * @param relative_path 需要转换的相对路径
  * @return 转换结果
  */
+#define sh_relativePathToAbsolute __sh_relativePathToAbsolute
 char *sh_relativePathToAbsolute(char *absolute_path, const char *relative_path);
 
 

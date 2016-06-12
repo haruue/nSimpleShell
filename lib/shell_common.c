@@ -4,7 +4,7 @@
 #include <nspireio/nspireio.h>
 #include "const.h"
 
-int sh_system(const char *command) {
+int __sh_system(const char *command) {
 	if (strlen(command) == 0) {
 		return 0;
 	}
@@ -53,7 +53,7 @@ int sh_system(const char *command) {
 	return result;
 }
 
-int sh_script(const char* path) {
+int __sh_script(const char* path) {
 	if (access(path, F_OK) != 0) {
 		nio_printf("sh: %s: No such file or directory\n", path);
 		return 1;
@@ -80,11 +80,11 @@ int sh_script(const char* path) {
 	return result;
 }
 
-void sh_exit(int status) {
+void __sh_exit(int status) {
 	nio_save(CONSOLE_SCREEN_CACHE_FILE, nio_get_default());
 	exit(status);
 }
 
-void sh_exit_with_shell() {
+void __sh_exit_with_shell() {
 	sh_exit(RETURN_VALUE_EXIT);
 }
