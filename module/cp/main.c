@@ -25,7 +25,7 @@ int module_main(int argc, char *argv[]) {
 	}
 	FILE *fp_src = fopen(src_path, "r");
 	if (fp_src == NULL) {
-		nio_printf("cp: cannot stat `%s': No such file", argv[1]);
+		nio_printf("cp: cannot stat `%s': No such file\n", argv[1]);
 		return 1;
 	}
 	FILE *fp_dst = fopen(dst_path, "w");
